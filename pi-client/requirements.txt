@@ -1,0 +1,4 @@
+# paho-mqtt 2.x. door.py uses mqtt.CallbackAPIVersion.VERSION2, which only
+# exists in 2.x. (On 1.6.x the client crashes at startup.)
+paho-mqtt>=2.0,<3.0
+gpiozero==2.0

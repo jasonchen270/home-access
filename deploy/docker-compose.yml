@@ -1,0 +1,22 @@
+# docker-compose for local dev infra.
+# Run: cd deploy && docker compose up -d
+# This gives you SQL Server (port 1433) and Mosquitto MQTT (port 1883).
+# The API and React app run on your host machine pointing at these.
+
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Your_password123"
+    ports: ["1433:1433"]
+    volumes: [sqldata:/var/opt/mssql]
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports: ["1883:1883"]
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+volumes:
+  sqldata:

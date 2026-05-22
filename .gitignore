@@ -1,0 +1,37 @@
+# ---- secrets / local config ----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+appsettings.*.Local.json
+secrets.json
+
+# ---- .NET ----
+bin/
+obj/
+*.user
+
+# ---- node / Vite ----
+node_modules/
+dist/
+.vite/
+.cache/
+*.local
+
+# ---- python (pi-client) ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ---- local databases ----
+*.db
+*.sqlite
+*.sqlite3
+
+# ---- os / editor ----
+.DS_Store
+.idea/
+.vscode/
+*.swp

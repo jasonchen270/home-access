@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    LEARNING NOTE: A .csproj file is the C# equivalent of package.json.
+    - Sdk="Microsoft.NET.Sdk.Web" tells dotnet "this is an ASP.NET Core web app"
+      and pulls in the implicit references (Microsoft.AspNetCore.App framework).
+    - PackageReference is like a dependency in package.json.
+    - There's no `dotnet install`. `dotnet restore` (or `dotnet build`, which
+      restores automatically) reads this file and pulls packages from NuGet.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>           <!-- Forces you to handle null explicitly. Worth keeping ON while learning. -->
+    <ImplicitUsings>enable</ImplicitUsings> <!-- Auto-imports common namespaces (System, System.Linq, etc.) -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- EF Core: the ORM. Sqlite = the provider (zero-setup, file-based, perfect for
+         learning). Design = the migration tooling (`dotnet ef migrations add ...`).
+         Versions track the TargetFramework above (net10.0 → EF Core 10.x). -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8" />
+
+    <!-- ASP.NET Identity on top of EF Core. Gives you Users, Roles, password hashing, login endpoints. -->
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.8" />
+
+    <!-- MQTT client. MQTTnet is the de-facto .NET MQTT library. -->
+    <PackageReference Include="MQTTnet" Version="4.3.6.1152" />
+    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.6.1152" />
+
+    <!-- Swagger UI for trying the API in a browser at /swagger. Critical for learning. -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+</Project>
