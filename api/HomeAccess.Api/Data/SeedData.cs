@@ -1,19 +1,14 @@
-// =============================================================================
-// SeedData.cs runs once on startup to ensure roles + an admin user + sample
-// devices exist. This is for LEARNING; in real apps seed via migrations or a
-// separate CLI tool.
-// =============================================================================
-
 using HomeAccess.Api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeAccess.Api.Data;
 
+// Ensures roles, an admin user, and sample devices exist on first run.
 public static class SeedData
 {
-    public const string AdminRole = "Admin";   // can manage devices + users
-    public const string MemberRole = "Member"; // household member, can only unlock allowed devices
+    public const string AdminRole = "Admin";    // manage devices + users
+    public const string MemberRole = "Member";  // unlock allowed devices only
 
     public static async Task RunAsync(IServiceProvider sp)
     {

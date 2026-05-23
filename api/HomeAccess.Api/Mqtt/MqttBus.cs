@@ -1,22 +1,6 @@
-// =============================================================================
-// MqttBus.cs is the bridge between the HTTP API and the Pi.
-//
-// CONCEPT: MQTT is publish/subscribe.
-//   - The Pi SUBSCRIBES to "home/door/front/cmd"  (commands FROM us)
-//   - The Pi PUBLISHES to "home/door/front/evt"   (events TO us)
-//   - The API does the opposite.
-//
-// Why a broker (Mosquitto) in the middle instead of HTTP-to-Pi directly?
-//   1. The Pi is usually behind NAT, so the API can't reach it, but it can reach
-//      the broker. The Pi opens an outbound TCP connection and keeps it alive.
-//   2. If the Pi goes offline briefly, MQTT can queue with QoS 1 + retained
-//      messages, which HTTP doesn't give you for free.
-//   3. Multiple devices, multiple subscribers (web app, mobile, alarm system)
-//      all decouple naturally.
-//
-// IHostedService = ASP.NET Core lifecycle hook. Start when app starts, stop on
-// shutdown. We use the ManagedClient variant which auto-reconnects on disconnect.
-// =============================================================================
+// Bridges the HTTP API and the Pi over MQTT. The Pi subscribes to "<topic>/cmd"
+// for commands and publishes to "<topic>/evt" for events. Runs as a hosted
+// service with an auto-reconnecting managed client.
 
 using System.Text;
 using System.Text.Json;
@@ -32,7 +16,7 @@ namespace HomeAccess.Api.Mqtt;
 public class MqttBus : IHostedService
 {
     private readonly IManagedMqttClient _client;
-    private readonly IServiceScopeFactory _scopeFactory;  // we need this to get a scoped DbContext from a singleton
+    private readonly IServiceScopeFactory _scopeFactory;   // to resolve a scoped DbContext from this singleton
     private readonly ILogger<MqttBus> _log;
     private readonly IConfiguration _cfg;
 
@@ -56,8 +40,7 @@ public class MqttBus : IHostedService
                 .Build())
             .Build();
 
-        // Subscribe to ALL device events. "+" is a single-level wildcard, "#" multi-level.
-        // "home/door/+/evt" matches "home/door/front/evt", "home/door/garage/evt", etc.
+        // "home/door/+/evt" matches every device's event topic ("+" = single-level wildcard).
         await _client.SubscribeAsync(new[] { new MqttTopicFilterBuilder()
             .WithTopic("home/door/+/evt").Build() });
 
@@ -68,7 +51,6 @@ public class MqttBus : IHostedService
 
     public Task StopAsync(CancellationToken ct) => _client.StopAsync();
 
-    // PUBLIC API: called by AccessController to send an unlock command.
     public Task PublishUnlockAsync(string deviceTopic, string userId)
     {
         var payload = JsonSerializer.Serialize(new { action = "unlock", userId, ts = DateTimeOffset.UtcNow });
@@ -79,7 +61,7 @@ public class MqttBus : IHostedService
             .Build());
     }
 
-    // Handler for messages FROM the Pi. Logs them as EntryEvents.
+    // Handles events from the Pi and logs them as EntryEvents.
     private async Task OnMessageAsync(MqttApplicationMessageReceivedEventArgs e)
     {
         try
@@ -90,7 +72,7 @@ public class MqttBus : IHostedService
             var msg = JsonSerializer.Deserialize<DeviceEvent>(json);
             if (msg is null) return;
 
-            // CreateScope() so we get a per-message DbContext (DbContext is NOT thread-safe).
+            // Per-message scope: DbContext is not thread-safe.
             using var scope = _scopeFactory.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 

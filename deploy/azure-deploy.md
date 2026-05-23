@@ -1,7 +1,7 @@
 # Deploying to Azure
 
-This walks through the cheapest viable Azure setup for this app. Goal: learn
-Azure App Service + Azure SQL + a managed MQTT story, end-to-end.
+The cheapest viable Azure setup for this app: Azure App Service + Azure SQL +
+a managed MQTT broker, end to end.
 
 ## Architecture on Azure
 
@@ -21,14 +21,13 @@ Azure App Service + Azure SQL + a managed MQTT story, end-to-end.
                 Raspberry Pi
 ```
 
-> Why not host Mosquitto in a container on Azure? You can (Azure Container
-> Apps), but a managed MQTT (HiveMQ Cloud free tier, or Azure Event Grid's
-> MQTT broker) saves you operating it. For learning, do Container Apps once
-> then graduate to managed.
+> Mosquitto can run in a container on Azure Container Apps, but a managed MQTT
+> broker (HiveMQ Cloud free tier, or Azure Event Grid's MQTT broker) avoids
+> operating it yourself.
 
 ## Step-by-step
 
-### 1. Provision (use Azure CLI; learn the imperative form first, ARM/Bicep later)
+### 1. Provision (Azure CLI)
 
 ```bash
 az login
@@ -107,7 +106,7 @@ switch to `dotnet ef migrations bundle` and run it as a separate deploy step.
 - Use a per-device username/password OR (better) X.509 client certs.
 - Each Pi gets a unique `client_id` so the broker can enforce ACLs per device.
 
-### 5. What to learn next once it's live
+### 5. Hardening once it's live
 
 - App Insights: trace a request from React → API → SQL → MQTT in one timeline.
 - Managed Identity: replace SQL password with the App Service's identity.

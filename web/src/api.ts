@@ -1,5 +1,4 @@
-// Thin fetch wrapper. credentials:"include" is critical; without it the
-// browser won't send the auth cookie set by the ASP.NET server.
+// Thin fetch wrapper. credentials:"include" sends the auth cookie set by the server.
 
 const j = (r: Response) => (r.ok ? r.json().catch(() => ({})) : Promise.reject(r));
 

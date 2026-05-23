@@ -10,12 +10,8 @@ WIRING (typical):
 The relay's NO/COM contacts then pulse the door strike's 12V circuit. Use an
 optoisolated relay so a fault in the lock circuit can't fry the Pi.
 
-LEARNING NOTES:
-  - paho-mqtt is the standard Python MQTT client.
-  - The two callbacks (on_connect, on_message) is the typical async pattern.
-  - We publish "online" with retain=True so anyone who connects later
-    immediately sees the device's last-known state without waiting for the next
-    heartbeat. This is MQTT's killer feature for IoT dashboards.
+Online/offline state is published with retain=True so a subscriber that connects
+later sees the device's last-known state without waiting for the next heartbeat.
 """
 
 import json
