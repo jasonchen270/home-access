@@ -87,23 +87,3 @@ Three independent gates a request must pass to physically unlock a door:
 Defense in depth: bypassing one layer doesn't unlock the door, because the next
 layer also blocks. The attempt is always logged before authorization is checked,
 for the audit trail.
-
----
-
-## Notes and gotchas
-
-- **CORS + cookies**: `AllowCredentials()` on the server and `credentials: "include"`
-  on the client are both required. Drop either and login appears to succeed but the
-  cookie isn't sent on the next request.
-- **DbContext is not thread-safe**: `MqttBus` (a singleton) creates a scope per
-  message instead of holding a `DbContext` directly.
-- **Middleware order**: `UseAuthentication()` must come before `UseAuthorization()`.
-- **MQTT retained messages**: convenient for "last known state" but they persist on
-  the broker until cleared.
-- **Auto-migrate on startup**: fine for dev; production should run migrations as a
-  separate deploy step.
-- **SQLite can't `ORDER BY` a `DateTimeOffset`**: SQLite has no native date type, so
-  EF Core throws when the entry log is sorted by time. `AppDbContext.OnModelCreating`
-  maps `DateTimeOffset` to a sortable `long` (UTC ms) via a value converter.
-- **paho-mqtt 1.x vs 2.x**: `door.py` uses `CallbackAPIVersion.VERSION2`, which only
-  exists in paho-mqtt 2.x. `requirements.txt` pins `>=2.0`.
