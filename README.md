@@ -1,6 +1,6 @@
 # Home Access Control Dashboard
 
-A home access control dashboard built with React, ASP.NET Core (C#), EF Core, SQLite, MQTT, and a Raspberry Pi door client, deployable to Azure. It runs locally with zero infrastructure: the API uses a file-based SQLite database and the Pi client falls back to a fake relay, so `dotnet run`, `npm run dev`, and `python door.py` exercise every layer without Docker, SQL Server, or hardware.
+A home access control dashboard built with React, ASP.NET Core (C#), EF Core, SQLite, MQTT, and a Raspberry Pi door client. It runs locally with zero infrastructure: the API uses a file-based SQLite database and the Pi client falls back to a fake relay, so `dotnet run`, `npm run dev`, and `python door.py` exercise every layer without Docker, SQL Server, or hardware.
 
 ## Prerequisites
 
