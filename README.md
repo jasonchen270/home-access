@@ -5,7 +5,6 @@ React + ASP.NET Core (C#) + EF Core + SQLite + MQTT + Raspberry Pi, deployable t
 Runs locally with zero infrastructure: the API uses a file-based SQLite database
 and the Pi client falls back to a fake relay, so `dotnet run` + `npm run dev` +
 `python door.py` exercises every layer without Docker, SQL Server, or hardware.
-The `deploy/` docker-compose is optional, for the SQL-Server-on-Azure path.
 
 ---
 
