@@ -9,32 +9,6 @@ The `deploy/` docker-compose is optional, for the SQL-Server-on-Azure path.
 
 ---
 
-## Layout
-
-```
-api/HomeAccess.Api/          ASP.NET Core Web API
-  Program.cs                 : DI, middleware pipeline, MQTT host registration
-  Models/Entities.cs         : domain model (User, Device, EntryEvent, UserDeviceAccess)
-  Data/AppDbContext.cs       : EF Core DbContext + Identity
-  Data/SeedData.cs           : admin user + sample devices on first run
-  Mqtt/MqttBus.cs            : MQTT pub/sub bridge between API and Pi
-  Controllers/AuthController.cs     : login / logout / me (cookie auth)
-  Controllers/DevicesController.cs  : list / unlock / events / grant access
-
-web/                         Vite + React + TypeScript SPA
-  src/App.tsx                : login screen + dashboard + entry log
-
-pi-client/                   Python MQTT client for the Pi (with laptop fallback)
-  door.py                    : subscribes to cmd topic, drives the relay
-
-deploy/
-  docker-compose.yml         : local SQL Server + Mosquitto for dev
-  mosquitto.conf
-  azure-deploy.md            : step-by-step Azure deployment
-```
-
----
-
 ## Running locally
 
 The flow to verify end to end: **browser click → API → MQTT → "Pi" → MQTT → API → DB → log**.
