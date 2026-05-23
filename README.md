@@ -70,20 +70,3 @@ On a laptop the GPIO import fails gracefully and prints `[relay] ON/OFF`, so no 
 ### 5. End to end
 Click **Unlock** in the browser → the `door.py` terminal prints `[relay] ON`/`OFF`
 → click **View log** → the granted event appears.
-
----
-
-## Security model
-
-Three independent gates a request must pass to physically unlock a door:
-
-| Layer | Question | Where it lives |
-|---|---|---|
-| **Authentication** | Are you signed in? | Cookie middleware (`Program.cs`) |
-| **Role authorization** | Are you a Member or Admin? | `[Authorize]` attribute |
-| **Row-level access** | Is THIS device shared with you? | `UserDeviceAccess` join in `DevicesController` |
-| **Schedule** | Is it in your allowed time window? | `IsWithinSchedule()` in `DevicesController` |
-
-Defense in depth: bypassing one layer doesn't unlock the door, because the next
-layer also blocks. The attempt is always logged before authorization is checked,
-for the audit trail.
